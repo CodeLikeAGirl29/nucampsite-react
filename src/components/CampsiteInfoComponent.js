@@ -1,30 +1,30 @@
 import React, { Component } from "react";
 import {
   Card,
-  CardImg,
-  CardImgOverlay,
   CardText,
   CardBody,
   CardTitle,
 } from "reactstrap";
 
 class CampsiteInfo extends Component {
-  render (comments) {
+  renderComments(comments) {
     if (comments) {
       return (
         <div className="col-md-5 m-1">
           <h4>Comments</h4>
-          {comments.map((comment) => (
-            <p key={comment.id}>
-              {comment.text} <br />
-              -- {comment.author},{" "}
-              {new Intl.DateTimeFormat("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "2-digit",
-              }).format(new Date(Date.parse(comment.date)))}
-            </p>
-          ))}
+          {
+            comments.map((comment) => (
+              <p key={comment.id}>
+                {comment.text} <br />
+                -- {comment.author},{" "}
+                {new Intl.DateTimeFormat("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "2-digit",
+                }).format(new Date(Date.parse(comment.date)))}
+              </p>
+            ))
+          }
         </div>
       );
     }
@@ -48,7 +48,7 @@ class CampsiteInfo extends Component {
             <div className="container">
                 <div className="row">
                     {this.renderCampsite(this.props.campsite)}
-                    {this.renderComments(this.props.campsite.comments)}
+                    <RenderComments comments={props.comments} />
                 </div>
             </div>
         );
