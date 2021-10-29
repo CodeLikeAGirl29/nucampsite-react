@@ -8,13 +8,14 @@ import {
   BreadcrumbItem,
   Button,
   Modal,
-  ModalHeader,
   ModalBody,
+  ModalHeader,
+  Label,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
 import { Loading } from "./LoadingComponent";
-import { baseUrl } from "../shared/baseUrl";
+import { baseUrl } from "../shared/BaseUrl";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
@@ -23,16 +24,9 @@ const minLength = (len) => (val) => val && val.length >= len;
 class CommentForm extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      modal: false,
-      rating: "",
-      clientname: "",
-      comment: "",
-      touched: {
-        rating: false,
-        clientname: false,
-        comment: false,
-      },
+      isModalOpen: false,
     };
 
     this.toggleModal = this.toggleModal.bind(this);
@@ -41,13 +35,13 @@ class CommentForm extends Component {
 
   toggleModal() {
     this.setState({
-      modal: !this.state.modal,
+      isModalOpen: !this.state.isModalOpen,
     });
   }
 
   handleSubmit(values) {
     this.toggleModal();
-    this.props.addComment(
+    this.props.postComment(
       this.props.campsiteId,
       values.rating,
       values.author,
@@ -57,39 +51,37 @@ class CommentForm extends Component {
 
   render() {
     return (
-      <div>
-        <Button
-          outline
-          className="fa fa-pencil fa-lg"
-          onClick={this.toggleModal}
-        >
-          Submit Comment
+      <div className="form-group">
+        <Button outline onClick={this.toggleModal}>
+          <i className="fa fa-pencil fa-lg" /> Submit Comment
         </Button>
-        <Modal isOpen={this.state.modal} toggle={this.toggleModal}>
+        <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
           <ModalBody>
             <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
               <div className="form-group">
-                Rating
+                <Label htmlFor="rating">Rating</Label>
                 <Control.select
+                  model=".rating"
                   id="rating"
                   name="rating"
-                  model=".rating"
                   className="form-control"
+                  defaultValue="1"
                 >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
                 </Control.select>
               </div>
               <div className="form-group">
-                Your Name
+                <Label htmlFor="author">Your Name</Label>
                 <Control.text
-                  id="clientname"
-                  name="clientname"
                   model=".author"
+                  id="author"
+                  name="author"
+                  placeholder="Your Name"
                   className="form-control"
                   validators={{
                     required,
@@ -110,18 +102,20 @@ class CommentForm extends Component {
                 />
               </div>
               <div className="form-group">
-                Comment
+                <Label htmlFor="text">Comment</Label>
                 <Control.textarea
-                  id="comment"
-                  name="comment"
                   model=".text"
+                  id="text"
+                  name="text"
                   rows="6"
                   className="form-control"
-                ></Control.textarea>
+                />
               </div>
-              <Button type="submit" value="submit" color="primary">
-                Login
-              </Button>
+              <div className="form-group">
+                <Button type="submit" color="primary">
+                  Submit
+                </Button>
+              </div>
             </LocalForm>
           </ModalBody>
         </Modal>
@@ -129,11 +123,12 @@ class CommentForm extends Component {
     );
   }
 }
+
 function RenderCampsite({ campsite }) {
   return (
     <div className="col-md-5 m-1">
       <Card>
-        <CardImg top src={baseUrl + campsite.image} alt={campsite.name} />
+        <CardImg top src={baseUrl + campsite.image} alt={campsite.image} />
         <CardBody>
           <CardText>{campsite.description}</CardText>
         </CardBody>
@@ -142,34 +137,30 @@ function RenderCampsite({ campsite }) {
   );
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, postComment, campsiteId }) {
   if (comments) {
     return (
-      <React.Fragment>
-        <div className="col-md-5 m-1">
-          <h4>Comments</h4>
-          {comments.map((comment) => {
-            return (
-              <div key={comment.id}>
-                <p>
-                  {comment.text}
-                  <br />
-                  -- {comment.author},{" "}
-                  {new Intl.DateTimeFormat("en-US", {
-                    year: "numeric",
-                    month: "short",
-                    day: "2-digit",
-                  }).format(new Date(Date.parse(comment.date)))}
-                </p>
-              </div>
-            );
-          })}
-          <CommentForm />
-        </div>
-      </React.Fragment>
+      <div className="col-md-5 m-1">
+        <h4>Comments</h4>
+        {comments.map((comment) => {
+          return (
+            <div>
+              <p>{comment.text}</p>
+              <p>
+                -- {comment.author},{" "}
+                {new Intl.DateTimeFormat("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "2-digit",
+                }).format(new Date(Date.parse(comment.date)))}
+              </p>
+            </div>
+          );
+        })}
+        <CommentForm campsiteId={campsiteId} postComment={postComment} />
+      </div>
     );
   }
-  return <div />;
 }
 
 function CampsiteInfo(props) {
@@ -202,7 +193,7 @@ function CampsiteInfo(props) {
               <BreadcrumbItem>
                 <Link to="/directory">Directory</Link>
               </BreadcrumbItem>
-              <BreadcrumbItem active>{props.campsite.name}</BreadcrumbItem>
+              <BreadcrumbItem>{props.campsite.name}</BreadcrumbItem>
             </Breadcrumb>
             <h2>{props.campsite.name}</h2>
             <hr />
@@ -212,7 +203,7 @@ function CampsiteInfo(props) {
           <RenderCampsite campsite={props.campsite} />
           <RenderComments
             comments={props.comments}
-            addComment={props.addComment}
+            postComment={props.postComment}
             campsiteId={props.campsite.id}
           />
         </div>
