@@ -4,8 +4,8 @@ import CampsiteInfo from "./CampsiteInfoComponent";
 import Header from "./HeaderComponent";
 import Footer from "./FooterComponent";
 import Home from "./HomeComponent";
-import Contact from "./ContactComponent";
 import About from "./AboutComponent";
+import Contact from "./ContactComponent";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { actions } from "react-redux-form";
@@ -16,8 +16,9 @@ import {
   fetchPromotions,
   fetchPartners,
   postFeedback,
-} from "../redux/ActionCreators";
+} from "../redux/ActionCreators"; // mapDispatchToProps
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+/* eslint-disable */
 
 const mapStateToProps = (state) => {
   return {
@@ -29,9 +30,14 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
+  // Set it up as Object - Recommanded Way. Object & Function
   postComment: (campsiteId, rating, author, text) =>
     postComment(campsiteId, rating, author, text),
   fetchCampsites: () => fetchCampsites(),
+  resetFeedbackForm: () => actions.reset("feedbackForm"),
+  fetchComments: () => fetchComments(),
+  fetchPromotions: () => fetchPromotions(),
+  fetchPartners: () => fetchPartners(),
   postFeedback: (
     firstName,
     lastName,
@@ -50,18 +56,16 @@ const mapDispatchToProps = {
       contactType,
       feedback
     ),
-  resetFeedbackForm: () => actions.reset("feedbackForm"),
-  fetchComments: () => fetchComments(),
-  fetchPromotions: () => fetchPromotions(),
-  fetchPartners: () => fetchPartners(),
 };
 
 class Main extends Component {
+  // Presentataion & Container / Impure
+
   componentDidMount() {
-    this.props.fetchCampsites();
-    this.props.fetchComments();
-    this.props.fetchPromotions();
-    this.props.fetchPartners();
+    this.props.fetchCampsites(); // Lifecyle Methods
+    this.props.fetchComments(); // Add Action Creators
+    this.props.fetchPromotions(); // Add Action Creators
+    this.props.fetchPartners(); // Add Action Creators
   }
 
   render() {
@@ -80,15 +84,15 @@ class Main extends Component {
               (partner) => partner.featured
             )[0]
           }
-          partnerLoading={this.props.partners.isLoading}
-          partnerErrMess={this.props.partners.errMess}
+          partnersLoading={this.props.partners.isLoading}
+          partnersErrMess={this.props.partners.errMess}
           promotion={
             this.props.promotions.promotions.filter(
               (promotion) => promotion.featured
             )[0]
           }
-          promotionLoading={this.props.promotions.isLoading}
-          promotionErrMess={this.props.promotions.errMess}
+          promotionsLoading={this.props.promotions.isLoading}
+          promotionsErrMess={this.props.promotions.errMess}
         />
       );
     };
@@ -139,8 +143,8 @@ class Main extends Component {
                 path="/contactus"
                 render={() => (
                   <Contact
-                    resetFeedbackForm={this.props.resetFeedbackForm}
                     postFeedback={this.props.postFeedback}
+                    resetFeedbackForm={this.props.resetFeedbackForm}
                   />
                 )}
               />

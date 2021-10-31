@@ -9,8 +9,29 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Loading } from "./LoadingComponent";
-import { baseUrl } from "../shared/BaseUrl";
+import { baseUrl } from "../shared/baseUrl";
 import { Fade, Stagger } from "react-animation-components";
+/* eslint-disable */
+
+function RenderPartner({ partner }) {
+  if (partner) {
+    return (
+      <React.Fragment>
+        <Media
+          object
+          src={baseUrl + partner.image}
+          alt={partner.name}
+          width="150"
+        ></Media>
+        <Media body className="ml-5 mb-4">
+          <Media heading>{partner.name}</Media>
+          {partner.description}
+        </Media>
+      </React.Fragment>
+    );
+  }
+  return <div />;
+}
 
 function PartnerList(props) {
   const partners = props.partners.partners.map((partner) => {
@@ -23,7 +44,7 @@ function PartnerList(props) {
     );
   });
 
-  if (props.partners.isLoading) {
+  if (props.isLoading) {
     return (
       <div className="container">
         <div className="row">
@@ -32,17 +53,18 @@ function PartnerList(props) {
       </div>
     );
   }
-  if (props.partners.errMess) {
+  if (props.errMess) {
     return (
       <div className="container">
         <div className="row">
           <div className="col">
-            <h4>{props.partners.errMess}</h4>
+            <h4>{props.errMess}</h4>
           </div>
         </div>
       </div>
     );
   }
+
   return (
     <div className="col mt-4">
       <Media list>
@@ -50,27 +72,6 @@ function PartnerList(props) {
       </Media>
     </div>
   );
-}
-
-function RenderPartner({ partner }) {
-  if (partner) {
-    return (
-      <React.Fragment>
-        <Media
-          object
-          src={baseUrl + partner.image}
-          alt={partner.name}
-          width="150"
-        />
-        <Media body className="ml-5 mb-4">
-          <Media heading>{partner.name}</Media>
-          {partner.description}
-        </Media>
-      </React.Fragment>
-    );
-  } else {
-    return <div />;
-  }
 }
 
 function About(props) {
