@@ -14,9 +14,9 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { Control, LocalForm, Errors } from "react-redux-form";
-import { Loading } from './LoadingComponent';
-import { baseUrl } from '../shared/BaseUrl';
-import { FadeTransform, Fade, Stagger } from 'react-animation-components';
+import { Loading } from "./LoadingComponent";
+import { baseUrl } from "../shared/BaseUrl";
+import { FadeTransform, Fade, Stagger } from "react-animation-components";
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !val || val.length <= len;
@@ -128,11 +128,7 @@ class CommentForm extends Component {
 function RenderCampsite({ campsite }) {
   return (
     <div className="col-md-5 m-1">
-      <FadeTransform
-        in
-        transformProps={{
-            exitTransform: 'scale(0.5) translateY(-50%)'
-        }}>
+      <FadeTransform enter="translateX(100px)" in>
         <Card>
           <CardImg top src={baseUrl + campsite.image} alt={campsite.image} />
           <CardBody>
@@ -177,25 +173,25 @@ function RenderComments({ comments, postComment, campsiteId }) {
 function CampsiteInfo(props) {
   if (props.isLoading) {
     return (
-        <div className="container">
-            <div className="row">
-                <Loading />
-            </div>
+      <div className="container">
+        <div className="row">
+          <Loading />
         </div>
+      </div>
     );
-}
-if (props.errMess) {
+  }
+  if (props.errMess) {
     return (
-        <div className="container">
-            <div className="row">
-                <div className="col">
-                    <h4>{props.errMess}</h4>
-                </div>
-            </div>
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <h4>{props.errMess}</h4>
+          </div>
         </div>
+      </div>
     );
-}
-if (props.campsite) {
+  }
+  if (props.campsite) {
     return (
       <div className="container">
         <div className="row">

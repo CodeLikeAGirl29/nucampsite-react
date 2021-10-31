@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import {
+  Nav,
   Navbar,
   NavbarBrand,
-  Nav,
   NavbarToggler,
   Collapse,
   NavItem,
@@ -22,11 +22,11 @@ class Header extends Component {
   constructor(props) {
     super(props);
 
-    this.toggleNav = this.toggleNav.bind(this);
     this.state = {
       isNavOpen: false,
       isModalOpen: false,
     };
+
     this.toggleNav = this.toggleNav.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -65,7 +65,6 @@ class Header extends Component {
             </div>
           </div>
         </Jumbotron>
-
         <Navbar dark sticky="top" expand="md">
           <div className="container">
             <NavbarBrand className="mr-auto" href="/">
@@ -90,13 +89,13 @@ class Header extends Component {
                   </NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink className="nav-link" to="/about">
+                  <NavLink className="nav-link" to="/aboutus">
                     <i className="fa fa-info fa-lg" /> About
                   </NavLink>
                 </NavItem>
                 <NavItem>
                   <NavLink className="nav-link" to="/contactus">
-                    <i className="fa fa-address-card fa-lg" /> Contact Us
+                    <i className="fa fa-address-card fa-lg" /> Contact
                   </NavLink>
                 </NavItem>
               </Nav>
@@ -111,7 +110,7 @@ class Header extends Component {
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
           <ModalBody>
-            <Form onSubmit={(this.handleLogin = this.handleLogin.bind(this))}>
+            <Form onSubmit={this.handleLogin}>
               <FormGroup>
                 <Label htmlFor="username">Username</Label>
                 <Input
